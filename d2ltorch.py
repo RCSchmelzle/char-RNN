@@ -213,6 +213,7 @@ class Module(d2l.nn_Module, d2l.HyperParameters):
     def training_step(self, batch):
         l = self.loss(self(*batch[:-1]), batch[-1])
         self.plot('loss', l, train=True)
+        print('loss')
         return l
 
     def validation_step(self, batch):
@@ -297,6 +298,7 @@ class Trainer(d2l.HyperParameters):
         self.model.train()
         for batch in self.train_dataloader:
             loss = self.model.training_step(self.prepare_batch(batch))
+            print(loss)
             self.optim.zero_grad()
             with torch.no_grad():
                 loss.backward()
