@@ -262,6 +262,7 @@ class Trainer(d2l.HyperParameters):
     Defined in :numref:`subsec_oo-design-models`"""
     def __init__(self, max_epochs, num_gpus=0, gradient_clip_val=0):
         self.save_hyperparameters()
+        self.loss = 0
         assert num_gpus == 0, 'No GPU support yet'
 
     def prepare_data(self, data):
@@ -283,8 +284,10 @@ class Trainer(d2l.HyperParameters):
         self.epoch = 0
         self.train_batch_idx = 0
         self.val_batch_idx = 0
+
         for self.epoch in range(self.max_epochs):
             self.fit_epoch()
+
 
     def fit_epoch(self):
         raise NotImplementedError
@@ -298,7 +301,7 @@ class Trainer(d2l.HyperParameters):
         self.model.train()
         for batch in self.train_dataloader:
             loss = self.model.training_step(self.prepare_batch(batch))
-            print(loss)
+            self.loss = loss
             self.optim.zero_grad()
             with torch.no_grad():
                 loss.backward()
@@ -760,6 +763,7 @@ class RNNLMScratch(d2l.Classifier):
         super().__init__()
         self.save_hyperparameters()
         self.init_params()
+        self.loss = 0
 
     def init_params(self):
         self.W_hq = nn.Parameter(
@@ -775,7 +779,8 @@ class RNNLMScratch(d2l.Classifier):
     def validation_step(self, batch):
         l = self.loss(self(*batch[:-1]), batch[-1])
         self.plot('ppl', d2l.exp(l), train=False)
-        print(l)
+        self.loss = l
+        return l
 
     def one_hot(self, X):
         """Defined in :numref:`sec_rnn-scratch`"""
