@@ -775,6 +775,7 @@ class RNNLMScratch(d2l.Classifier):
     def validation_step(self, batch):
         l = self.loss(self(*batch[:-1]), batch[-1])
         self.plot('ppl', d2l.exp(l), train=False)
+        print(l)
 
     def one_hot(self, X):
         """Defined in :numref:`sec_rnn-scratch`"""
