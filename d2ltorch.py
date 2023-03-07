@@ -286,7 +286,9 @@ class Trainer(d2l.HyperParameters):
         self.val_batch_idx = 0
 
         for self.epoch in range(self.max_epochs):
-            self.fit_epoch()
+            loss = self.fit_epoch()
+
+        return loss
 
 
     def fit_epoch(self):
@@ -310,7 +312,7 @@ class Trainer(d2l.HyperParameters):
                 self.optim.step()
             self.train_batch_idx += 1
         if self.val_dataloader is None:
-            return
+            return loss
         self.model.eval()
         for batch in self.val_dataloader:
             with torch.no_grad():
