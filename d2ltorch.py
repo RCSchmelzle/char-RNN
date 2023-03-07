@@ -262,7 +262,6 @@ class Trainer(d2l.HyperParameters):
     Defined in :numref:`subsec_oo-design-models`"""
     def __init__(self, max_epochs, num_gpus=0, gradient_clip_val=0):
         self.save_hyperparameters()
-        self.loss = 0
         assert num_gpus == 0, 'No GPU support yet'
 
     def prepare_data(self, data):
@@ -303,7 +302,6 @@ class Trainer(d2l.HyperParameters):
         self.model.train()
         for batch in self.train_dataloader:
             loss = self.model.training_step(self.prepare_batch(batch))
-            self.loss = loss
             self.optim.zero_grad()
             with torch.no_grad():
                 loss.backward()
@@ -312,7 +310,7 @@ class Trainer(d2l.HyperParameters):
                 self.optim.step()
             self.train_batch_idx += 1
         if self.val_dataloader is None:
-            return
+            return loss
         self.model.eval()
         for batch in self.val_dataloader:
             with torch.no_grad():
@@ -780,7 +778,6 @@ class RNNLMScratch(d2l.Classifier):
     def validation_step(self, batch):
         l = self.loss(self(*batch[:-1]), batch[-1])
         self.plot('ppl', d2l.exp(l), train=False)
-        self.return_loss = l
         return l
 
     def one_hot(self, X):
