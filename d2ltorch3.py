@@ -219,7 +219,6 @@ class Module(d2l.nn_Module, d2l.HyperParameters):
 
     def validation_step(self, batch):
         l = self.loss(self(*batch[:-1]), batch[-1])
-        self.return_loss = l
         self.plot('loss', l, train=False)
 
     def configure_optimizers(self):
