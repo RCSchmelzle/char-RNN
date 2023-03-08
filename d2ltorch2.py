@@ -775,7 +775,6 @@ class RNNLMScratch(d2l.Classifier):
 
     def validation_step(self, batch):
         l = self.loss(self(*batch[:-1]), batch[-1])
-        self.return_loss = l
         self.plot('ppl', d2l.exp(l), train=False)
 
     def one_hot(self, X):
